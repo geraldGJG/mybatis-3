@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.io.Reader;
 import java.util.List;
 
+import com.alibaba.fastjson.JSON;
 import org.apache.ibatis.BaseDataTest;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.io.Resources;
@@ -41,7 +42,7 @@ class AutoConstructorTest {
       sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
     }
 
-    // populate in-memory database
+    // populate in-memory database 填充内存数据库
     BaseDataTest.runScript(sqlSessionFactory.getConfiguration().getEnvironment().getDataSource(),
         "org/apache/ibatis/autoconstructor/CreateDB.sql");
   }
@@ -51,6 +52,7 @@ class AutoConstructorTest {
     try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
       final AutoConstructorMapper mapper = sqlSession.getMapper(AutoConstructorMapper.class);
       final Object subject = mapper.getSubject(1);
+      System.out.println(JSON.toJSONString(subject));
       assertNotNull(subject);
     }
   }
@@ -86,6 +88,9 @@ class AutoConstructorTest {
       verifySubjects(mapper.getExtensiveSubjects());
     }
   }
+
+  // 反射模块测试 gjg
+
 
   private void verifySubjects(final List<?> subjects) {
     assertNotNull(subjects);
